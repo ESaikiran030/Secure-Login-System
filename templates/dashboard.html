@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - {{ app_name }}{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg glass-nav">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('dashboard.index') }}">
+            <i class="fas fa-shield-halved me-2"></i>{{ app_name }}
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ url_for('dashboard.index') }}">
+                        <i class="fas fa-gauge-high me-1"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('dashboard.profile') }}">
+                        <i class="fas fa-user-gear me-1"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item ms-lg-2">
+                    <a class="btn btn-outline-light btn-sm" href="{{ url_for('auth.logout') }}">
+                        <i class="fas fa-right-from-bracket me-1"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4 animate-fade-in">
+        <div class="col-12">
+            <div class="glass-card welcome-banner">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between">
+                    <div>
+                        <h1 class="h3 fw-bold mb-2">Welcome, {{ user.fullname }}!</h1>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-hand-sparkles me-1"></i>
+                            You're securely signed in to your account.
+                        </p>
+                    </div>
+                    <div class="user-avatar mt-3 mt-md-0">
+                        <span>{{ user.fullname[0] | upper }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4 animate-fade-in delay-1">
+        <div class="col-md-6 col-lg-4">
+            <div class="glass-card stat-card h-100">
+                <div class="stat-icon bg-primary-subtle">
+                    <i class="fas fa-user text-primary"></i>
+                </div>
+                <h2 class="h6 text-muted text-uppercase mb-1">Username</h2>
+                <p class="h5 fw-semibold mb-0">{{ user.username }}</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="glass-card stat-card h-100">
+                <div class="stat-icon bg-info-subtle">
+                    <i class="fas fa-envelope text-info"></i>
+                </div>
+                <h2 class="h6 text-muted text-uppercase mb-1">Email</h2>
+                <p class="h5 fw-semibold mb-0 text-break">{{ user.email }}</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="glass-card stat-card h-100">
+                <div class="stat-icon {% if user.is_2fa_enabled %}bg-success-subtle{% else %}bg-warning-subtle{% endif %}">
+                    <i class="fas fa-mobile-screen-button {% if user.is_2fa_enabled %}text-success{% else %}text-warning{% endif %}"></i>
+                </div>
+                <h2 class="h6 text-muted text-uppercase mb-1">2FA Status</h2>
+                <p class="h5 fw-semibold mb-0">
+                    {% if user.is_2fa_enabled %}
+                        <span class="badge bg-success"><i class="fas fa-check me-1"></i>Enabled</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark"><i class="fas fa-times me-1"></i>Disabled</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <div class="glass-card stat-card h-100">
+                <div class="stat-icon bg-secondary-subtle">
+                    <i class="fas fa-clock-rotate-left text-secondary"></i>
+                </div>
+                <h2 class="h6 text-muted text-uppercase mb-1">Last Login</h2>
+                <p class="h5 fw-semibold mb-0">{{ user.formatted_last_login() }}</p>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-6">
+            <div class="glass-card stat-card h-100">
+                <div class="stat-icon bg-purple-subtle">
+                    <i class="fas fa-calendar-plus text-purple"></i>
+                </div>
+                <h2 class="h6 text-muted text-uppercase mb-1">Account Created</h2>
+                <p class="h5 fw-semibold mb-0">{{ user.formatted_created_at() }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4 animate-fade-in delay-2">
+        <div class="col-12">
+            <div class="glass-card">
+                <h2 class="h5 fw-bold mb-3"><i class="fas fa-bolt me-2"></i>Quick Actions</h2>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{{ url_for('dashboard.profile') }}" class="btn btn-primary btn-glow">
+                        <i class="fas fa-user-gear me-1"></i> Manage Profile
+                    </a>
+                    {% if not user.is_2fa_enabled %}
+                    <a href="{{ url_for('dashboard.profile') }}#two-factor" class="btn btn-outline-primary">
+                        <i class="fas fa-shield me-1"></i> Enable 2FA
+                    </a>
+                    {% endif %}
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger">
+                        <i class="fas fa-right-from-bracket me-1"></i> Sign Out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

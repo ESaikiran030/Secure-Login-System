@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - {{ app_name }}{% endblock %}
+{% block body_class %}dashboard-page{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg glass-nav">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="{{ url_for('dashboard.index') }}">
+            <i class="fas fa-shield-halved me-2"></i>{{ app_name }}
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('dashboard.index') }}">
+                        <i class="fas fa-gauge-high me-1"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link active" href="{{ url_for('dashboard.profile') }}">
+                        <i class="fas fa-user-gear me-1"></i> Profile
+                    </a>
+                </li>
+                <li class="nav-item ms-lg-2">
+                    <a class="btn btn-outline-light btn-sm" href="{{ url_for('auth.logout') }}">
+                        <i class="fas fa-right-from-bracket me-1"></i> Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <div class="row mb-4 animate-fade-in">
+        <div class="col-12">
+            <h1 class="h3 fw-bold"><i class="fas fa-user-gear me-2"></i>Account Settings</h1>
+            <p class="text-muted">Manage your profile, security, and account preferences.</p>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6 animate-fade-in">
+            <div class="glass-card h-100">
+                <h2 class="h5 fw-bold mb-3"><i class="fas fa-id-card me-2"></i>Update Profile</h2>
+                <form method="POST" action="{{ url_for('dashboard.profile') }}" novalidate>
+                    {{ profile_form.hidden_tag() }}
+                    <div class="form-floating mb-3">
+                        {{ profile_form.fullname(class="form-control", id="profile-fullname") }}
+                        <label for="profile-fullname">Full Name</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        {{ profile_form.username(class="form-control", id="profile-username") }}
+                        <label for="profile-username">Username</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        {{ profile_form.email(class="form-control", id="profile-email") }}
+                        <label for="profile-email">Email</label>
+                    </div>
+                    {{ profile_form.profile_submit(class="btn btn-primary btn-glow") }}
+                </form>
+            </div>
+        </div>
+
+        <div class="col-lg-6 animate-fade-in delay-1">
+            <div class="glass-card h-100">
+                <h2 class="h5 fw-bold mb-3"><i class="fas fa-key me-2"></i>Change Password</h2>
+                <form method="POST" action="{{ url_for('dashboard.profile') }}" novalidate>
+                    {{ password_form.hidden_tag() }}
+                    <div class="form-floating mb-3 password-field">
+                        {{ password_form.current_password(class="form-control", id="current-password") }}
+                        <label for="current-password">Current Password</label>
+                        <button type="button" class="password-toggle" data-target="current-password" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-floating mb-3 password-field">
+                        {{ password_form.new_password(class="form-control", id="new-password") }}
+                        <label for="new-password">New Password</label>
+                        <button type="button" class="password-toggle" data-target="new-password" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="form-floating mb-3 password-field">
+                        {{ password_form.confirm_password(class="form-control", id="new-confirm-password") }}
+                        <label for="new-confirm-password">Confirm New Password</label>
+                        <button type="button" class="password-toggle" data-target="new-confirm-password" aria-label="Toggle password visibility">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    {{ password_form.password_submit(class="btn btn-primary btn-glow") }}
+                </form>
+            </div>
+        </div>
+
+        <div class="col-12 animate-fade-in delay-2" id="two-factor">
+            <div class="glass-card">
+                <h2 class="h5 fw-bold mb-3"><i class="fas fa-shield-halved me-2"></i>Two-Factor Authentication</h2>
+                {% if user.is_2fa_enabled %}
+                    <div class="alert alert-success d-flex align-items-center" role="alert">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Two-factor authentication is currently <strong class="ms-1">enabled</strong> on your account.
+                    </div>
+                    <p class="text-muted">Enter a code from your authenticator app to disable 2FA.</p>
+                    <form method="POST" action="{{ url_for('dashboard.profile') }}" class="row g-3 align-items-end">
+                        {{ disable_2fa_form.hidden_tag() }}
+                        <div class="col-md-4">
+                            <div class="form-floating">
+                                {{ disable_2fa_form.otp_token(class="form-control", id="disable-otp", placeholder="000000") }}
+                                <label for="disable-otp">Authentication Code</label>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            {{ disable_2fa_form.disable_submit(class="btn btn-outline-danger") }}
+                        </div>
+                    </form>
+                {% else %}
+                    <p class="text-muted">
+                        Scan the QR code below with Google Authenticator or any TOTP app, then enter the 6-digit code to enable 2FA.
+                    </p>
+                    <div class="row g-4 align-items-center">
+                        <div class="col-md-4 text-center">
+                            {% if qr_code %}
+                            <img src="{{ qr_code }}" alt="2FA QR Code" class="qr-code img-fluid rounded">
+                            {% endif %}
+                        </div>
+                        <div class="col-md-8">
+                            {% if totp_secret %}
+                            <p class="small text-muted mb-2">Manual entry key:</p>
+                            <code class="d-block p-2 rounded secret-key mb-3">{{ totp_secret }}</code>
+                            {% endif %}
+                            <form method="POST" action="{{ url_for('dashboard.profile') }}" class="row g-3 align-items-end">
+                                {{ enable_2fa_form.hidden_tag() }}
+                                <div class="col-md-6">
+                                    <div class="form-floating">
+                                        {{ enable_2fa_form.otp_token(class="form-control", id="enable-otp", placeholder="000000") }}
+                                        <label for="enable-otp">Authentication Code</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    {{ enable_2fa_form.enable_submit(class="btn btn-success btn-glow") }}
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-12 animate-fade-in delay-3">
+            <div class="glass-card border-danger-subtle">
+                <h2 class="h5 fw-bold text-danger mb-3"><i class="fas fa-triangle-exclamation me-2"></i>Delete Account</h2>
+                <p class="text-muted">
+                    Permanently delete your account and all associated data. This action cannot be undone.
+                </p>
+                <form method="POST" action="{{ url_for('dashboard.profile') }}" novalidate
+                      onsubmit="return confirm('Are you sure you want to permanently delete your account?');">
+                    {{ delete_form.hidden_tag() }}
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            <div class="form-floating password-field">
+                                {{ delete_form.password(class="form-control", id="delete-password") }}
+                                <label for="delete-password">Confirm Password</label>
+                                <button type="button" class="password-toggle" data-target="delete-password" aria-label="Toggle password visibility">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            {{ delete_form.delete_submit(class="btn btn-danger") }}
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        SecureLogin.initPasswordStrength('new-password', '{{ url_for("auth.password_strength_api") }}');
+    });
+</script>
+{% endblock %}

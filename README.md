@@ -1,55 +1,53 @@
 # 🔐 Secure Login System
 
-A production-ready Secure Login System built with Flask featuring secure authentication, bcrypt password hashing, session management, CSRF protection, rate limiting, account lockout, and optional Two-Factor Authentication (2FA).
+A production-ready Secure Login System built with Flask featuring bcrypt password hashing, secure authentication, session management, CSRF protection, rate limiting, account lockout, and optional Two-Factor Authentication (2FA).
 
 ---
 
 ## 📌 Project Overview
 
-This project is a secure authentication web application developed using Flask. It demonstrates modern authentication practices including password hashing, session management, brute-force protection, and optional 2FA.
+This project is a secure authentication web application developed using Flask. It demonstrates modern authentication practices including secure password storage, user authentication, session management, brute-force protection, and optional Two-Factor Authentication.
 
 ---
 
 ## ✨ Features
 
-- User Registration
-- Secure Login
-- Password Hashing (bcrypt)
-- Session Management
-- Logout
-- CSRF Protection
-- SQL Injection Prevention
-- Input Validation
-- Rate Limiting
-- Account Lockout
-- Optional Two-Factor Authentication
-- Responsive UI
-- Dashboard
-- Profile Page
+* User Registration
+* Secure Login & Logout
+* Password Hashing using bcrypt
+* Session Management
+* CSRF Protection
+* SQL Injection Prevention
+* Input Validation
+* Rate Limiting
+* Account Lockout after Failed Login Attempts
+* Optional Two-Factor Authentication (2FA)
+* Responsive User Interface
+* User Dashboard
+* User Profile
 
 ---
 
-## 🛠 Tech Stack
+## 🛠️ Tech Stack
 
-- Python
-- Flask
-- SQLAlchemy
-- Flask-Login
-- Flask-Bcrypt
-- Flask-WTF
-- Bootstrap 5
-- HTML
-- CSS
-- JavaScript
-- SQLite
+* Python
+* Flask
+* SQLAlchemy
+* Flask-Login
+* Flask-Bcrypt
+* Flask-WTF
+* Bootstrap 5
+* HTML5
+* CSS3
+* JavaScript
+* SQLite
 
 ---
 
 ## 📂 Project Structure
 
-```
+```text
 Secure-Login-System/
-│
 ├── database/
 ├── models/
 ├── routes/
@@ -58,6 +56,7 @@ Secure-Login-System/
 ├── utils/
 ├── app.py
 ├── config.py
+├── extensions.py
 ├── requirements.txt
 └── README.md
 ```
@@ -80,36 +79,31 @@ python app.py
 
 ## 🔒 Security Features
 
-- bcrypt Password Hashing
-- CSRF Protection
-- Secure Sessions
-- SQL Injection Prevention
-- Account Lockout
-- Rate Limiting
-- Secure Cookies
-- Optional 2FA
-
----
-
-## 📷 Screenshots
-
-(Add screenshots here)
+* bcrypt Password Hashing
+* CSRF Protection
+* SQL Injection Prevention
+* Secure Session Management
+* Secure Cookies
+* Input Validation
+* Account Lockout
+* Rate Limiting
+* Optional Two-Factor Authentication (2FA)
 
 ---
 
 ## 📈 Future Enhancements
 
-- Email Verification
-- Password Reset
-- OAuth Login
-- Admin Dashboard
-- JWT Authentication
+* Email Verification
+* Password Reset
+* OAuth Login
+* Admin Dashboard
+* JWT Authentication
+* MySQL/PostgreSQL Support
 
 ---
 
 ## 👨‍💻 Author
 
-Sai Kiran Eda
+**Sai Kiran Eda**
 
-GitHub:
-https://github.com/ESaikiran030
+GitHub: https://github.com/ESaikiran030
